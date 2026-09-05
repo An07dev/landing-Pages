@@ -426,10 +426,18 @@ export default function MasterLicensesPage() {
   }, [fetchLicenses, fetchLeads, fetchOrders, fetchCustomers, fetchWebhookLogs, fetchMasterConfig]);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      refreshAll();
-    }
-  }, [isAuthenticated, refreshAll]);
+    if (!isAuthenticated) return;
+    refreshAll();
+
+    // Tự động reload dữ liệu mỗi 4 giây (3-5s) để lắng nghe SePay Webhook theo thời gian thực
+    const autoRefreshTimer = setInterval(() => {
+      fetchWebhookLogs();
+      fetchLeads();
+      fetchLicenses();
+    }, 4000);
+
+    return () => clearInterval(autoRefreshTimer);
+  }, [isAuthenticated, refreshAll, fetchWebhookLogs, fetchLeads, fetchLicenses]);
 
   // Handle PIN Unlock
   const handlePinSubmit = (e: React.FormEvent) => {

@@ -238,7 +238,8 @@ export default function LandingPage() {
     // Initial check right away
     checkStatus();
 
-    const interval = setInterval(checkStatus, 2500);
+    // Polling check payment status every 3s (lắng nghe Webhook SePay)
+    const interval = setInterval(checkStatus, 3000);
     return () => clearInterval(interval);
   }, [isPackageModalOpen, isOrderSubmitted, orderCode, orderPhone, isPaymentPaid]);
 

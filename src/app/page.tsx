@@ -17,6 +17,10 @@ import {
   FiZoomIn,
   FiChevronLeft,
   FiShield,
+  FiMail,
+  FiCopy,
+  FiDownload,
+  FiRefreshCw,
 } from 'react-icons/fi';
 import { CoolMode } from '@/registry/magicui/cool-mode';
 import { OrbitingCircles } from '@/registry/magicui/orbiting-circles';
@@ -176,6 +180,21 @@ export default function LandingPage() {
   const [isOrderSubmitted, setIsOrderSubmitted] = useState(false);
   const [copiedField, setCopiedField] = useState<string | null>(null);
 
+  // Real-time SePay Payment Success State
+  const [isPaymentPaid, setIsPaymentPaid] = useState(false);
+  const [paidDetails, setPaidDetails] = useState<{
+    orderCode?: string;
+    buyerName?: string;
+    buyerEmail?: string;
+    buyerPhone?: string;
+    plan?: string;
+    amount?: number;
+    licenseKey?: string;
+    emailStatus?: string;
+    sourceCodeDownloadUrl?: string;
+    paidAt?: string;
+  } | null>(null);
+
   // Dynamic Bank / VietQR Config from Master Admin
   const [bankConfig, setBankConfig] = useState({
     bankCode: 'MB',
@@ -197,9 +216,37 @@ export default function LandingPage() {
       .catch(() => {});
   }, []);
 
+  // Polling check payment status via SePay Webhook every 2.5s
+  useEffect(() => {
+    if (!isPackageModalOpen || !isOrderSubmitted || !orderCode || isPaymentPaid) return;
+
+    const checkStatus = async () => {
+      try {
+        const res = await fetch(
+          `/api/public/order-status?orderCode=${encodeURIComponent(orderCode)}&phone=${encodeURIComponent(orderPhone)}`
+        );
+        const data = await res.json();
+        if (data.success && data.isPaid) {
+          setIsPaymentPaid(true);
+          setPaidDetails(data);
+        }
+      } catch {
+        // ignore
+      }
+    };
+
+    // Initial check right away
+    checkStatus();
+
+    const interval = setInterval(checkStatus, 2500);
+    return () => clearInterval(interval);
+  }, [isPackageModalOpen, isOrderSubmitted, orderCode, orderPhone, isPaymentPaid]);
+
   const openOrderModal = (plan: '399k' | '799k' = '399k') => {
     setSelectedPlan(plan);
     setIsOrderSubmitted(false);
+    setIsPaymentPaid(false);
+    setPaidDetails(null);
     setIsPackageModalOpen(true);
   };
 
@@ -1933,7 +1980,7 @@ export default function LandingPage() {
             {/* Modal Body */}
             <div style={{ padding: '20px 22px', display: 'flex', flexDirection: 'column', gap: 14 }}>
               {/* Quick Plan Switcher */}
-              {!isOrderSubmitted && (
+              {!isOrderSubmitted && !isPaymentPaid && (
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, background: 'rgba(255, 255, 255, 0.04)', padding: 4, borderRadius: 12, border: '1px solid rgba(255,255,255,0.08)' }}>
                   <button
                     type="button"
@@ -1974,7 +2021,195 @@ export default function LandingPage() {
                 </div>
               )}
 
-              {isOrderSubmitted ? (
+              {/* ================= SUCCESS STATE: SEPAY PAYMENT CONFIRMED ================= */}
+              {isPaymentPaid ? (
+                <div style={{ textAlign: 'center', padding: '6px 0' }}>
+                  {/* Animated Green Badge */}
+                  <div
+                    style={{
+                      width: 66,
+                      height: 66,
+                      borderRadius: '50%',
+                      background: 'linear-gradient(135deg, rgba(16, 185, 129, 0.25) 0%, rgba(5, 150, 105, 0.15) 100%)',
+                      border: '2.5px solid #10b981',
+                      color: '#34d399',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 12px',
+                      fontSize: 32,
+                      boxShadow: '0 0 35px rgba(16, 185, 129, 0.45)',
+                    }}
+                  >
+                    ✓
+                  </div>
+
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.4)', color: '#34d399', padding: '4px 14px', borderRadius: 20, fontSize: 12, fontWeight: 800, marginBottom: 8 }}>
+                    <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#34d399', display: 'inline-block', boxShadow: '0 0 8px #34d399' }} />
+                    THANH TOÁN THÀNH CÔNG (SEPAY 1S)
+                  </div>
+
+                  <h3 style={{ fontSize: 20, fontWeight: 900, color: '#ffffff', margin: '0 0 4px 0' }}>
+                    🎉 Đã Kích Hoạt Bản Quyền Thành Công!
+                  </h3>
+                  <p style={{ fontSize: 13, color: '#94a3b8', margin: '0 0 16px 0' }}>
+                    Mã đơn: <strong style={{ color: '#38bdf8' }}>{paidDetails?.orderCode || orderCode}</strong> • Số tiền: <strong style={{ color: '#34d399' }}>{Number(paidDetails?.amount || 10000).toLocaleString('vi-VN')}₫</strong>
+                  </p>
+
+                  {/* PROMINENT EMAIL CALLOUT BOX */}
+                  <div
+                    style={{
+                      background: 'linear-gradient(135deg, rgba(56, 189, 248, 0.15) 0%, rgba(99, 102, 241, 0.15) 100%)',
+                      border: '1.5px solid rgba(56, 189, 248, 0.45)',
+                      borderRadius: 14,
+                      padding: '16px',
+                      textAlign: 'left',
+                      marginBottom: 14,
+                      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.35)',
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+                      <div style={{ fontSize: 28, flexShrink: 0, marginTop: 2 }}>✉️</div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: 13.5, fontWeight: 800, color: '#38bdf8', marginBottom: 4 }}>
+                          VUI LÒNG KIỂM TRA EMAIL CỦA BẠN:
+                        </div>
+                        <div style={{ fontSize: 14.5, fontWeight: 900, color: '#ffffff', wordBreak: 'break-all', marginBottom: 6 }}>
+                          {paidDetails?.buyerEmail || orderEmail || '(Email bạn đã đăng ký)'}
+                        </div>
+                        <div style={{ fontSize: 12.5, color: '#e2e8f0', lineHeight: 1.55 }}>
+                          Hệ thống đã tự động gửi <strong>01 email bàn giao</strong> chứa đầy đủ: <strong>Mã kích hoạt bản quyền</strong>, <strong>Link Google Drive tải toàn bộ Source code</strong> và <strong>Video hướng dẫn cài đặt</strong>.
+                        </div>
+                        <div style={{ fontSize: 11.5, color: '#94a3b8', marginTop: 6, fontStyle: 'italic', background: 'rgba(0,0,0,0.25)', padding: '6px 10px', borderRadius: 6 }}>
+                          💡 <strong>Lưu ý:</strong> Nếu chưa thấy ở Hộp thư đến (Inbox), hãy kiểm tra thêm mục <strong>Thư rác (Spam)</strong> hoặc <strong>Quảng cáo</strong> nhé!
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* LICENSE KEY BOX */}
+                  {paidDetails?.licenseKey && (
+                    <div
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.04)',
+                        border: '1px solid rgba(255, 255, 255, 0.12)',
+                        borderRadius: 12,
+                        padding: '12px 14px',
+                        textAlign: 'left',
+                        marginBottom: 14,
+                      }}
+                    >
+                      <div style={{ fontSize: 12, fontWeight: 700, color: '#94a3b8', marginBottom: 6 }}>
+                        🔑 Mã Bản Quyền (License Key):
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
+                        <code
+                          style={{
+                            fontFamily: 'monospace',
+                            fontSize: 14.5,
+                            fontWeight: 800,
+                            color: '#34d399',
+                            background: '#080a12',
+                            padding: '8px 12px',
+                            borderRadius: 8,
+                            border: '1px solid rgba(16, 185, 129, 0.3)',
+                            flex: 1,
+                            letterSpacing: '0.5px',
+                          }}
+                        >
+                          {paidDetails.licenseKey}
+                        </code>
+                        <button
+                          type="button"
+                          onClick={() => copyToClipboard(paidDetails.licenseKey || '', 'licenseKey')}
+                          style={{
+                            background: 'linear-gradient(135deg, #10b981, #059669)',
+                            border: 'none',
+                            color: '#fff',
+                            fontSize: 12,
+                            fontWeight: 700,
+                            padding: '9px 14px',
+                            borderRadius: 8,
+                            cursor: 'pointer',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {copiedField === 'licenseKey' ? '✓ Đã chép' : 'Sao chép'}
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* QUICK ACTIONS */}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {paidDetails?.sourceCodeDownloadUrl && (
+                      <a
+                        href={paidDetails.sourceCodeDownloadUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{
+                          textDecoration: 'none',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: 8,
+                          padding: '11px 16px',
+                          background: 'linear-gradient(135deg, #6366f1, #4f46e5)',
+                          color: '#fff',
+                          borderRadius: 10,
+                          fontWeight: 800,
+                          fontSize: 13.5,
+                          boxShadow: '0 4px 15px rgba(99, 102, 241, 0.3)',
+                        }}
+                      >
+                        <FiDownload size={15} /> Tải Trực Tiếp Source Code (Google Drive) ↗
+                      </a>
+                    )}
+
+                    <a
+                      href={`https://zalo.me/${bankConfig.hotlineSupport?.replace(/[^0-9]/g, '') || '0973475484'}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{
+                        textDecoration: 'none',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 8,
+                        padding: '11px 16px',
+                        background: 'linear-gradient(135deg, #0068ff, #0084ff)',
+                        color: '#fff',
+                        borderRadius: 10,
+                        fontWeight: 800,
+                        fontSize: 13.5,
+                      }}
+                    >
+                      💬 Nhắn Zalo Hỗ Trợ Kỹ Thuật 1:1
+                    </a>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsPackageModalOpen(false);
+                        setIsOrderSubmitted(false);
+                        setIsPaymentPaid(false);
+                      }}
+                      style={{
+                        background: 'rgba(255,255,255,0.06)',
+                        border: '1px solid rgba(255,255,255,0.12)',
+                        color: '#94a3b8',
+                        padding: '10px',
+                        borderRadius: 10,
+                        cursor: 'pointer',
+                        fontSize: 13,
+                        fontWeight: 700,
+                      }}
+                    >
+                      Hoàn Tất & Đóng Cửa Sổ
+                    </button>
+                  </div>
+                </div>
+              ) : isOrderSubmitted ? (
                 <div style={{ textAlign: 'center', padding: '8px 0' }}>
                   <div
                     style={{
@@ -1996,9 +2231,37 @@ export default function LandingPage() {
                   <h4 style={{ fontSize: 19, fontWeight: 900, color: '#fff', marginBottom: 4 }}>
                     Đăng Ký {currentPlanInfo.shortName} Thành Công!
                   </h4>
-                  <p style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.5, marginBottom: 14 }}>
+                  <p style={{ fontSize: 13, color: '#94a3b8', lineHeight: 1.5, marginBottom: 12 }}>
                     Mã đơn: <strong style={{ color: selectedPlan === '799k' ? '#818cf8' : '#f97316' }}>{orderCode}</strong>
                   </p>
+
+                  {/* Pulse Live Listener Badge */}
+                  <div
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 8,
+                      padding: '5px 14px',
+                      background: 'rgba(56, 189, 248, 0.1)',
+                      borderRadius: 20,
+                      border: '1px solid rgba(56, 189, 248, 0.3)',
+                      marginBottom: 14,
+                    }}
+                  >
+                    <span
+                      style={{
+                        width: 8,
+                        height: 8,
+                        borderRadius: '50%',
+                        background: '#38bdf8',
+                        display: 'inline-block',
+                        boxShadow: '0 0 10px #38bdf8',
+                      }}
+                    />
+                    <span style={{ fontSize: 12, color: '#38bdf8', fontWeight: 700 }}>
+                      Đang tự động lắng nghe thanh toán SePay 1s...
+                    </span>
+                  </div>
 
                   {/* Dynamic VietQR Preview */}
                   <div

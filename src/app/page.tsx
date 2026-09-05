@@ -1999,7 +1999,7 @@ export default function LandingPage() {
                       transition: 'all 0.2s ease',
                     }}
                   >
-                    ⚡ Gói Tự Cài 10K (Test)
+                    ⚡ Gói Tự Cài (399K)
                   </button>
                   <button
                     type="button"
@@ -2017,7 +2017,7 @@ export default function LandingPage() {
                       transition: 'all 0.2s ease',
                     }}
                   >
-                    ✨ Gói Setup A-Z 10K (Test)
+                    ✨ Gói Setup A-Z (799K)
                   </button>
                 </div>
               )}

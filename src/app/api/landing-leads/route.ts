@@ -54,21 +54,6 @@ export async function POST(request: Request) {
         ip: clientIp,
         userAgent,
       });
-
-      // Cập nhật hoặc tạo mới hồ sơ Khách Hàng (CRM)
-      await Customer.findOneAndUpdate(
-        { phone: cleanPhone },
-        {
-          $set: {
-            name: cleanName,
-            ...(cleanEmail ? { email: cleanEmail } : {}),
-            lastOrderAt: new Date(),
-          },
-          $inc: { totalOrders: 1 },
-          $addToSet: { tags: `gói-${cleanPlan}` },
-        },
-        { upsert: true, new: true, setDefaultsOnInsert: true }
-      );
     } catch (dbErr) {
       console.error('MongoDB Lead save error:', dbErr);
     }

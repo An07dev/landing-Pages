@@ -43,40 +43,74 @@ export async function POST(request: Request) {
 
     await connectToDatabase();
 
-    // 1. Trích xuất mã đơn hàng từ nội dung chuyển khoản
-    // Format: ST399K_123456, ST799K_654321, ORD123456
-    const orderCodeMatch = rawContent.match(/(ST(?:399|799)K_\d+)/i) || rawContent.match(/(ORD\d+)/i);
-    const extractedOrderCode = orderCodeMatch ? orderCodeMatch[1].toUpperCase() : '';
-
-    // Trích xuất số điện thoại nếu có
-    const phoneMatch = rawContent.match(/(0[3|5|7|8|9]\d{8})/);
-    const extractedPhone = phoneMatch ? phoneMatch[1] : '';
-
+    // 1. Trích xuất mã đơn hàng thông minh từ nội dung chuyển khoản
+    // Format hỗ trợ: ST399K_123456, ST399K123456, ST399K 123456, ST799K_123456, GOI399K 123456, ORD123456, số 6 chữ số
     let matchedLead = null;
+    let extractedOrderCode = '';
 
-    // Tìm Lead theo orderCode
-    if (extractedOrderCode) {
-      matchedLead = await Lead.findOne({ orderCode: extractedOrderCode });
+    // Bước 1.1: Match prefix dạng ST399K, ST799K, ST10K, GOI399K, GOI799K, ORD kèm số
+    const prefixMatch = rawContent.match(/(ST(?:399|799|10)K|GOI(?:399|799|10)K|ORD)[_\s-]?(\d{4,8})/i);
+    if (prefixMatch) {
+      const prefix = prefixMatch[1].toUpperCase();
+      const numberPart = prefixMatch[2];
+      const codeWithUnderscore = `${prefix}_${numberPart}`;
+      const codeWithoutUnderscore = `${prefix}${numberPart}`;
+
+      matchedLead = await Lead.findOne({
+        $or: [
+          { orderCode: codeWithUnderscore },
+          { orderCode: codeWithoutUnderscore },
+          { orderCode: new RegExp(numberPart + '$') },
+        ],
+      });
+
+      extractedOrderCode = matchedLead?.orderCode || codeWithUnderscore;
     }
 
-    // Nếu chưa tìm thấy, thử tìm theo số điện thoại
+    // Bước 1.2: Nếu chưa tìm thấy, trích xuất tất cả các chuỗi 5-6 chữ số trong nội dung chuyển khoản để khớp đuôi orderCode
+    if (!matchedLead) {
+      const digitsMatches = rawContent.match(/\d{5,6}/g) || [];
+      for (const digits of digitsMatches) {
+        matchedLead = await Lead.findOne({
+          orderCode: new RegExp(digits + '$'),
+        });
+        if (matchedLead) {
+          extractedOrderCode = matchedLead.orderCode;
+          break;
+        }
+      }
+    }
+
+    // Bước 1.3: Trích xuất số điện thoại (03x, 05x, 07x, 08x, 09x hoặc 84x)
+    const phoneMatch = rawContent.match(/(0[3|5|7|8|9]\d{8})/) || rawContent.match(/(84[3|5|7|8|9]\d{8})/);
+    const extractedPhone = phoneMatch ? phoneMatch[1].replace(/^84/, '0') : '';
+
     if (!matchedLead && extractedPhone) {
       matchedLead = await Lead.findOne({ phone: extractedPhone }).sort({ createdAt: -1 });
+      if (matchedLead) extractedOrderCode = matchedLead.orderCode;
     }
 
     // Xác định thông tin người mua và gói bản quyền
-    let buyerName = 'Khách Hàng VietQR';
-    let buyerPhone = extractedPhone;
-    let buyerEmail = '';
-    let plan = extractedOrderCode.includes('799') || amount >= 750000 ? '799k' : '399k';
+    let buyerName = matchedLead?.name || 'Khách Hàng VietQR';
+    let buyerPhone = matchedLead?.phone || extractedPhone;
+    let buyerEmail = matchedLead?.email || '';
+    let plan = matchedLead?.plan || (extractedOrderCode.includes('799') || amount >= 750000 ? '799k' : '399k');
     const orderCode = matchedLead?.orderCode || extractedOrderCode || `SEPAY_${id || Date.now()}`;
 
-    if (matchedLead) {
-      buyerName = matchedLead.name || buyerName;
-      buyerPhone = matchedLead.phone || buyerPhone;
-      buyerEmail = matchedLead.email || '';
-      plan = matchedLead.plan || plan;
+    // Nếu chưa có email từ Lead, kiểm tra trong Customer CRM theo SĐT
+    if (!buyerEmail && buyerPhone) {
+      try {
+        const existingCustomer = await Customer.findOne({ phone: buyerPhone }).lean();
+        if (existingCustomer) {
+          buyerName = existingCustomer.name || buyerName;
+          buyerEmail = existingCustomer.email || buyerEmail;
+        }
+      } catch {
+        // ignore
+      }
+    }
 
+    if (matchedLead) {
       // Cập nhật trạng thái Lead sang 'paid'
       matchedLead.paymentStatus = 'paid';
       matchedLead.paymentMethod = 'vietqr';
@@ -101,7 +135,7 @@ export async function POST(request: Request) {
       buyerPhone,
       plan,
       price: amount || 10000,
-      notes: `Kích hoạt tự động qua SePay Webhook - Giao dịch #${id || referenceCode || ''} | Nội dung: ${rawContent}`,
+      notes: `Kích hoạt tự động qua SePay Webhook - Giao dịch #${id || referenceCode || ''} | Mã đơn: ${orderCode} | Nội dung: ${rawContent}`,
       status: 'available',
       shopName: null,
       assignedDb: null,

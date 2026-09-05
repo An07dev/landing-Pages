@@ -278,7 +278,7 @@ export default function MasterLicensesPage() {
   const [simName, setSimName] = useState<string>('Nguyễn Văn Khách Hàng');
   const [simPhone, setSimPhone] = useState<string>('0988776655');
   const [simEmail, setSimEmail] = useState<string>('khachhang@gmail.com');
-  const [simAmount, setSimAmount] = useState<number>(799000);
+  const [simAmount, setSimAmount] = useState<number>(10000);
   const [isSimulating, setIsSimulating] = useState<boolean>(false);
 
   // Create Modal State
@@ -1680,6 +1680,7 @@ export default function MasterLicensesPage() {
                       onChange={(e) => setSimAmount(Number(e.target.value))}
                       className={styles.formSelect}
                     >
+                      <option value={10000}>10.000₫ (Gói Test SePay 10K)</option>
                       <option value={799000}>799.000₫ (Gói Setup A-Z)</option>
                       <option value={399000}>399.000₫ (Gói Tự Cài Đặt)</option>
                     </select>

@@ -68,7 +68,7 @@ export async function POST(request: Request) {
     let buyerName = 'Khách Hàng VietQR';
     let buyerPhone = extractedPhone;
     let buyerEmail = '';
-    let plan = amount >= 750000 ? '799k' : '399k';
+    let plan = extractedOrderCode.includes('799') || amount >= 750000 ? '799k' : '399k';
     const orderCode = matchedLead?.orderCode || extractedOrderCode || `SEPAY_${id || Date.now()}`;
 
     if (matchedLead) {
@@ -100,7 +100,7 @@ export async function POST(request: Request) {
       buyerName,
       buyerPhone,
       plan,
-      price: amount || (plan === '799k' ? 799000 : 399000),
+      price: amount || 10000,
       notes: `Kích hoạt tự động qua SePay Webhook - Giao dịch #${id || referenceCode || ''} | Nội dung: ${rawContent}`,
       status: 'available',
       shopName: null,
@@ -120,7 +120,7 @@ export async function POST(request: Request) {
               ...(buyerEmail ? { email: buyerEmail } : {}),
               lastOrderAt: new Date(),
             },
-            $inc: { totalOrders: 1, totalSpent: amount },
+            $inc: { totalOrders: 1, totalSpent: amount || 10000 },
             $addToSet: { tags: ['sepay-buyer', `license-${plan}`] },
           },
           { upsert: true, new: true, setDefaultsOnInsert: true }
@@ -142,7 +142,7 @@ export async function POST(request: Request) {
         orderCode,
         licenseKey: uniqueKey,
         plan,
-        amount: amount || (plan === '799k' ? 799000 : 399000),
+        amount: amount || 10000,
       });
 
       if (emailRes.success) {

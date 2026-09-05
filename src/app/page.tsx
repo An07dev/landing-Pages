@@ -142,18 +142,18 @@ const benefitsList = Array.from({ length: 6 }, () => rawShopBigBenefits).flat();
 const planDetails = {
   '399k': {
     name: 'Gói Bán Hàng Ngoại Sàn (Tự Cài Đặt)',
-    shortName: 'Gói Tự Cài 399K',
-    priceNumber: 399000,
-    priceStr: '399.000₫',
+    shortName: 'Gói Tự Cài 10K (Test)',
+    priceNumber: 10000,
+    priceStr: '10.000₫',
     originalPriceStr: '2.490.000₫',
     memoPrefix: 'GOI399K',
     badge: 'Full Source Code + Hướng Dẫn A-Z',
   },
   '799k': {
     name: 'Gói Setup & Cài Đặt Trọn Gói A - Z',
-    shortName: 'Gói Setup A-Z 799K',
-    priceNumber: 799000,
-    priceStr: '799.000₫',
+    shortName: 'Gói Setup A-Z 10K (Test)',
+    priceNumber: 10000,
+    priceStr: '10.000₫',
     originalPriceStr: '3.500.000₫',
     memoPrefix: 'GOI799K',
     badge: 'Bàn Giao Chìa Khóa Trao Tay (Cài Sẵn A-Z)',
@@ -1359,8 +1359,8 @@ export default function LandingPage() {
                     Gói Bán Hàng Ngoại Sàn
                   </span>
                   <div className={styles.floatPlanPriceWrap}>
-                    <span className={styles.floatPlanPrice}>399.000₫</span>
-                    <span className={styles.floatPlanPeriod}>/ trọn đời</span>
+                    <span className={styles.floatPlanPrice}>10.000₫</span>
+                    <span className={styles.floatPlanPeriod}>/ test sepay</span>
                   </div>
                   <CoolMode options={{ particle: "🔥" }}>
                     <button
@@ -1368,7 +1368,7 @@ export default function LandingPage() {
                       className={`${styles.floatPlanBtn} ${styles.floatPlanBtnPopular}`}
                       onClick={() => openOrderModal('399k')}
                     >
-                      <FiZap size={16} /> ĐĂNG KÝ GÓI 399K NGAY
+                      <FiZap size={16} /> ĐĂNG KÝ GÓI TEST 10K NGAY
                     </button>
                   </CoolMode>
                 </div>
@@ -1426,8 +1426,8 @@ export default function LandingPage() {
                     Gói Setup Trọn Gói A - Z
                   </span>
                   <div className={styles.floatPlanPriceWrap}>
-                    <span className={styles.floatPlanPrice} style={{ color: '#a5b4fc' }}>799.000₫</span>
-                    <span className={styles.floatPlanPeriod}>/ bàn giao</span>
+                    <span className={styles.floatPlanPrice} style={{ color: '#a5b4fc' }}>10.000₫</span>
+                    <span className={styles.floatPlanPeriod}>/ test sepay</span>
                   </div>
                   <CoolMode options={{ particle: "⚡" }}>
                     <button
@@ -1435,7 +1435,7 @@ export default function LandingPage() {
                       className={styles.floatPlanBtn}
                       onClick={() => openOrderModal('799k')}
                     >
-                      <FiCheck size={16} /> ĐẶT DỊCH VỤ SETUP A-Z
+                      <FiCheck size={16} /> ĐẶT GÓI SETUP TEST 10K
                     </button>
                   </CoolMode>
                 </div>
@@ -1951,7 +1951,7 @@ export default function LandingPage() {
                       transition: 'all 0.2s ease',
                     }}
                   >
-                    ⚡ Gói Tự Cài 399K
+                    ⚡ Gói Tự Cài 10K (Test)
                   </button>
                   <button
                     type="button"
@@ -1969,7 +1969,7 @@ export default function LandingPage() {
                       transition: 'all 0.2s ease',
                     }}
                   >
-                    ✨ Gói Setup A-Z 799K
+                    ✨ Gói Setup A-Z 10K (Test)
                   </button>
                 </div>
               )}

@@ -35,10 +35,14 @@ export function generateLicenseEmailHtml(params: {
     params.plan === '799k'
       ? 'Gói Setup & Cài Đặt Trọn Gói A-Z (799K)'
       : 'Gói Bán Hàng Ngoại Sàn Tự Cài Đặt (399K)';
-  const bannerTitle = params.bannerTitle || 'XÁC NHẬN BÀN GIAO MÃ NGUỒN SHOPBIG';
+  const bannerTitle = params.bannerTitle || 'XÁC NHẬN BÀN GIAO MÃ NGUỒN & BẢN QUYỀN';
   const introText =
     params.introText ||
-    `Hệ thống ShopBig đã ghi nhận giao dịch thanh toán thành công của bạn cho đơn hàng <strong>#${params.orderCode}</strong> (${planName}). Dưới đây là thông tin bàn giao mã bản quyền và gói source code hoàn chỉnh:`;
+    `Hệ thống ShopBig đã ghi nhận giao dịch thanh toán thành công cho đơn hàng <strong>#${params.orderCode}</strong>. Chúng tôi xin trân trọng gửi tới bạn thông tin bản quyền và đường link tải trọn bộ mã nguồn:`;
+
+  const formattedAmount = params.amount
+    ? `${params.amount.toLocaleString('vi-VN')}₫`
+    : (params.plan === '799k' ? '799.000₫' : '399.000₫');
 
   return `
 <!DOCTYPE html>
@@ -47,214 +51,144 @@ export function generateLicenseEmailHtml(params: {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bàn Giao Mã Nguồn & Bản Quyền ShopBig</title>
-  <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      background-color: #080a12;
-      color: #e2e8f0;
-      margin: 0;
-      padding: 20px;
-    }
-    .email-container {
-      max-width: 620px;
-      margin: 0 auto;
-      background: #0f1422;
-      border: 1px solid #232838;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-    }
-    .header {
-      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-      padding: 32px 24px;
-      text-align: center;
-      color: #ffffff;
-    }
-    .header h1 {
-      margin: 0 0 8px 0;
-      font-size: 22px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-    }
-    .header p {
-      margin: 0;
-      font-size: 14px;
-      opacity: 0.9;
-    }
-    .content {
-      padding: 32px 24px;
-    }
-    .greeting {
-      font-size: 15px;
-      line-height: 1.6;
-      margin-bottom: 20px;
-      color: #f8fafc;
-    }
-    .key-box {
-      background: rgba(99, 102, 241, 0.12);
-      border: 2px dashed #6366f1;
-      border-radius: 12px;
-      padding: 20px;
-      text-align: center;
-      margin: 24px 0;
-    }
-    .key-label {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #a5b4fc;
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-    .key-value {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-      font-size: 24px;
-      font-weight: 800;
-      color: #38bdf8;
-      letter-spacing: 0.08em;
-      background: #080a12;
-      padding: 10px 16px;
-      border-radius: 8px;
-      display: inline-block;
-      border: 1px solid rgba(56, 189, 248, 0.4);
-    }
-    .btn-download {
-      display: block;
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      color: #ffffff !important;
-      text-decoration: none;
-      font-size: 16px;
-      font-weight: 700;
-      text-align: center;
-      padding: 15px 24px;
-      border-radius: 10px;
-      margin: 24px 0;
-      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
-    }
-    .guide-box {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
-      padding: 20px;
-      margin: 24px 0;
-    }
-    .guide-box h3 {
-      margin: 0 0 14px 0;
-      font-size: 15px;
-      color: #fbbf24;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .guide-step {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 12px;
-      font-size: 13.5px;
-      line-height: 1.5;
-    }
-    .step-num {
-      width: 22px;
-      height: 22px;
-      background: #6366f1;
-      color: #ffffff;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 700;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
-    .order-summary {
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding-top: 16px;
-      font-size: 13px;
-      color: #94a3b8;
-    }
-    .footer {
-      background: #080a12;
-      border-top: 1px solid #232838;
-      padding: 20px 24px;
-      text-align: center;
-      font-size: 12px;
-      color: #64748b;
-    }
-    .footer a {
-      color: #818cf8;
-      text-decoration: none;
-    }
-  </style>
 </head>
-<body>
-  <div class="email-container">
-    <div class="header">
-      <h1>${bannerTitle}</h1>
-      <p>Thanh toán thành công qua VietQR SePay • Cấp quyền sở hữu 100%</p>
-    </div>
-
-    <div class="content">
-      <div class="greeting">
-        Kính chào <strong>${params.buyerName}</strong>,
-        <br><br>
-        ${introText}
-      </div>
-
-      <!-- KEY BOX -->
-      <div class="key-box">
-        <div class="key-label">🔑 Mã Kích Hoạt Bản Quyền (License Key)</div>
-        <div class="key-value">${params.licenseKey}</div>
-        <p style="font-size: 12px; color: #94a3b8; margin: 10px 0 0 0;">
-          Mã key dùng để kích hoạt hệ quản trị và khởi tạo Database riêng biệt cho cửa hàng của bạn.
-        </p>
-      </div>
-
-      <!-- DOWNLOAD BUTTON -->
-      <a href="${params.downloadUrl}" target="_blank" class="btn-download">
-        🚀 TẢI TOÀN BỘ MÃ NGUỒN & TÀI LIỆU (GOOGLE DRIVE)
-      </a>
-
-      <!-- 3-STEP SETUP GUIDE -->
-      <div class="guide-box">
-        <h3>⚡ Hướng Dẫn Kích Hoạt 3 Bước Siêu Tốc:</h3>
+<body style="margin: 0; padding: 0; background-color: #0b0f19; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; color: #f1f5f9;">
+  
+  <!-- MAIN WRAPPER TABLE -->
+  <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #0b0f19; padding: 32px 12px;">
+    <tr>
+      <td align="center">
         
-        <div class="guide-step">
-          <div class="step-num">1</div>
-          <div>
-            <strong>Tải và giải nén source code:</strong> Mở thư mục dự án và chạy lệnh <code>npm install</code> rồi <code>npm run dev</code>.
-          </div>
-        </div>
+        <!-- CONTAINER -->
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" style="max-width: 600px; background-color: #111827; border: 1px solid #1f293d; border-radius: 16px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);">
+          
+          <!-- HEADER BANNER -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #4338ca 0%, #6366f1 50%, #8b5cf6 100%); padding: 36px 28px; text-align: center;">
+              <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center">
+                    <div style="display: inline-block; background: rgba(255, 255, 255, 0.18); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 20px; padding: 4px 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #ffffff; margin-bottom: 12px;">
+                      ✓ THANH TOÁN THÀNH CÔNG • XÁC THỰC 100%
+                    </div>
+                    <h1 style="margin: 0 0 6px 0; font-size: 22px; font-weight: 800; color: #ffffff; letter-spacing: -0.02em; line-height: 1.3;">
+                      ${bannerTitle}
+                    </h1>
+                    <p style="margin: 0; font-size: 13px; color: #e0e7ff; opacity: 0.95;">
+                      Nền Tảng Bán Hàng Ngoại Sàn Tự Động Hóa ShopBig
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
 
-        <div class="guide-step">
-          <div class="step-num">2</div>
-          <div>
-            <strong>Kích hoạt bản quyền:</strong> Mở trình duyệt truy cập website, hệ thống sẽ hiện màn hình Setup -> Nhập Tên Cửa Hàng và Mã Key: <code>${params.licenseKey}</code>.
-          </div>
-        </div>
+          <!-- BODY CONTENT -->
+          <tr>
+            <td style="padding: 32px 28px 24px 28px;">
+              
+              <!-- GREETING -->
+              <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.6; color: #f8fafc;">
+                Kính gửi <strong>${params.buyerName}</strong>,
+              </p>
+              <p style="margin: 0 0 24px 0; font-size: 14px; line-height: 1.65; color: #cbd5e1;">
+                ${introText}
+              </p>
 
-        <div class="guide-step">
-          <div class="step-num">3</div>
-          <div>
-            <strong>Hoàn tất trong 3 giây:</strong> Hệ thống tự động tạo MongoDB Tenant CSDL độc lập, nạp 19+ sản phẩm mẫu, kết nối VietQR SePay và mở trang Admin Dashboard cho bạn quản lý.
-          </div>
-        </div>
-      </div>
+              <!-- LICENSE KEY BOX -->
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin: 20px 0; background: linear-gradient(180deg, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.06) 100%); border: 1.5px dashed #6366f1; border-radius: 12px; padding: 20px; text-align: center;">
+                <tr>
+                  <td align="center" style="padding: 16px 12px;">
+                    <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #a5b4fc; margin-bottom: 8px;">
+                      🔑 MÃ BẢN QUYỀN HỆ THỐNG (LICENSE KEY)
+                    </div>
+                    <div style="display: inline-block; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 22px; font-weight: 800; color: #38bdf8; background: #0b0f19; padding: 10px 20px; border-radius: 8px; letter-spacing: 0.08em; border: 1px solid rgba(56, 189, 248, 0.35); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);">
+                      ${params.licenseKey}
+                    </div>
+                    <div style="font-size: 12px; color: #94a3b8; margin-top: 10px; line-height: 1.4;">
+                      Mã bản quyền định danh chính thức cấp quyền quản trị trọn đời cho chủ shop.
+                    </div>
+                  </td>
+                </tr>
+              </table>
 
-      <!-- ORDER DETAILS -->
-      <div class="order-summary">
-        <p style="margin: 4px 0;"><strong>Mã đơn hàng:</strong> #${params.orderCode}</p>
-        <p style="margin: 4px 0;"><strong>Gói dịch vụ:</strong> ${planName}</p>
-        <p style="margin: 4px 0;"><strong>Số tiền đã thanh toán:</strong> ${params.amount.toLocaleString('vi-VN')}₫</p>
-        <p style="margin: 4px 0;"><strong>Tài liệu kỹ thuật:</strong> <a href="${params.docsUrl}" style="color: #38bdf8;">${params.docsUrl}</a></p>
-      </div>
-    </div>
+              <!-- DOWNLOAD CALL TO ACTION -->
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" style="margin: 24px 0 16px 0;">
+                <tr>
+                  <td align="center">
+                    <a href="${params.downloadUrl}" target="_blank" style="display: block; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; text-decoration: none; font-size: 15px; font-weight: 700; text-align: center; padding: 15px 24px; border-radius: 10px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.35); letter-spacing: 0.02em;">
+                      📥 TẢI TRỌN BỘ MÃ NGUỒN (GOOGLE DRIVE)
+                    </a>
+                  </td>
+                </tr>
+              </table>
 
-    <div class="footer">
-      <p style="margin: 0 0 6px 0;">Cần hỗ trợ kỹ thuật cài đặt? Liên hệ ngay Hotline / Zalo: <strong>${params.hotline}</strong></p>
-      <p style="margin: 0;">© 2026 ShopBig Platform. Nền tảng bán hàng ngoại sàn tự động hóa 100%.</p>
-    </div>
-  </div>
+              <!-- FALLBACK LINK -->
+              <p style="margin: 0 0 24px 0; font-size: 12px; color: #64748b; text-align: center; word-break: break-all;">
+                Nếu không bấm được nút trên, vui lòng copy link: <a href="${params.downloadUrl}" target="_blank" style="color: #38bdf8; text-decoration: underline;">${params.downloadUrl}</a>
+              </p>
+
+              <!-- ORDER SUMMARY TABLE -->
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background-color: #1a2234; border: 1px solid #28334e; border-radius: 10px; overflow: hidden; margin: 24px 0;">
+                <tr>
+                  <td colspan="2" style="background-color: #202b42; padding: 10px 16px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #cbd5e1; border-bottom: 1px solid #28334e;">
+                    📋 Chi Tiết Đơn Hàng & Giao Dịch
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 16px; font-size: 13px; color: #94a3b8; border-bottom: 1px solid #232d44; width: 40%;">Mã đơn hàng:</td>
+                  <td style="padding: 10px 16px; font-size: 13px; font-weight: 700; color: #f8fafc; border-bottom: 1px solid #232d44;">#${params.orderCode}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 16px; font-size: 13px; color: #94a3b8; border-bottom: 1px solid #232d44;">Gói bản quyền:</td>
+                  <td style="padding: 10px 16px; font-size: 13px; font-weight: 600; color: #a5b4fc; border-bottom: 1px solid #232d44;">${planName}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 16px; font-size: 13px; color: #94a3b8; border-bottom: 1px solid #232d44;">Số tiền thanh toán:</td>
+                  <td style="padding: 10px 16px; font-size: 14px; font-weight: 800; color: #34d399; border-bottom: 1px solid #232d44;">${formattedAmount}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 10px 16px; font-size: 13px; color: #94a3b8;">Trạng thái:</td>
+                  <td style="padding: 10px 16px; font-size: 13px; font-weight: 700; color: #38bdf8;">✓ Đã kích hoạt & Sở hữu trọn đời</td>
+                </tr>
+              </table>
+
+              <!-- SUPPORT & ASSISTANCE CARD -->
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" style="background: rgba(255, 255, 255, 0.02); border: 1px solid #232d44; border-radius: 10px; padding: 16px; margin: 20px 0 8px 0;">
+                <tr>
+                  <td>
+                    <div style="font-size: 13px; font-weight: 700; color: #fbbf24; margin-bottom: 8px;">
+                      🤝 Kênh Hỗ Trợ Kỹ Thuật & Tài Liệu:
+                    </div>
+                    <div style="font-size: 13px; color: #cbd5e1; line-height: 1.6;">
+                      • <strong>Hotline / Zalo hỗ trợ:</strong> <span style="color: #38bdf8; font-weight: 700;">${params.hotline}</span><br>
+                      • <strong>Tài liệu hướng dẫn:</strong> <a href="${params.docsUrl}" target="_blank" style="color: #38bdf8; text-decoration: none;">${params.docsUrl}</a>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+            <td style="background-color: #0b0f19; border-top: 1px solid #1f293d; padding: 24px; text-align: center;">
+              <p style="margin: 0 0 8px 0; font-size: 12px; color: #64748b; line-height: 1.5;">
+                🛡️ <em>Lưu ý bảo mật:</em> Quý khách vui lòng lưu giữ mã bản quyền và mã nguồn cẩn thận. Không chia sẻ mã này cho người lạ.
+              </p>
+              <p style="margin: 0; font-size: 12px; color: #475569;">
+                © 2026 <strong>ShopBig Platform</strong>. Nền tảng bán hàng ngoại sàn tự động hóa 100%.
+              </p>
+            </td>
+          </tr>
+
+        </table>
+        
+      </td>
+    </tr>
+  </table>
+
 </body>
 </html>
   `.trim();

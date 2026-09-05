@@ -2135,45 +2135,72 @@ export default function MasterLicensesPage() {
                   fontSize: '13px',
                 }}
               >
-                <div style={{ background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)', padding: '20px', textAlign: 'center', color: '#fff' }}>
-                  <h3 style={{ margin: '0 0 4px 0', fontSize: '17px', fontWeight: 800 }}>
-                    {configData.emailBannerTitle || 'XÁC NHẬN BÀN GIAO MÃ NGUỒN SHOPBIG'}
+                <div style={{ background: 'linear-gradient(135deg, #4338ca 0%, #6366f1 50%, #8b5cf6 100%)', padding: '24px 20px', textAlign: 'center', color: '#fff' }}>
+                  <div style={{ display: 'inline-block', background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.3)', borderRadius: '20px', padding: '3px 12px', fontSize: '10px', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: '#fff', marginBottom: '8px' }}>
+                    ✓ THANH TOÁN THÀNH CÔNG • XÁC THỰC 100%
+                  </div>
+                  <h3 style={{ margin: '0 0 4px 0', fontSize: '18px', fontWeight: 800 }}>
+                    {configData.emailBannerTitle || 'XÁC NHẬN BÀN GIAO MÃ NGUỒN & BẢN QUYỀN'}
                   </h3>
                   <p style={{ margin: 0, fontSize: '12px', opacity: 0.9 }}>
-                    Thanh toán thành công qua VietQR SePay • Cấp quyền sở hữu 100%
+                    Nền Tảng Bán Hàng Ngoại Sàn Tự Động Hóa ShopBig
                   </p>
                 </div>
 
-                <div style={{ padding: '20px' }}>
-                  <p style={{ marginTop: 0 }}>
-                    Kính chào <strong>Nguyễn Văn Khách Hàng</strong>,
+                <div style={{ padding: '24px 20px' }}>
+                  <p style={{ marginTop: 0, fontSize: '14px' }}>
+                    Kính gửi <strong>Nguyễn Văn Khách Hàng</strong>,
                     <br /><br />
-                    {configData.emailIntroText || 'Hệ thống ShopBig đã ghi nhận giao dịch thanh toán thành công...'}
+                    {configData.emailIntroText || 'Hệ thống ShopBig đã ghi nhận giao dịch thanh toán thành công cho đơn hàng #ST399K_123456. Chúng tôi xin trân trọng gửi tới bạn thông tin bản quyền và đường link tải trọn bộ mã nguồn:'}
                   </p>
 
-                  <div style={{ background: 'rgba(99, 102, 241, 0.12)', border: '2px dashed #6366f1', borderRadius: '10px', padding: '16px', textAlign: 'center', margin: '16px 0' }}>
-                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#a5b4fc', textTransform: 'uppercase', marginBottom: '6px' }}>
-                      🔑 Mã Kích Hoạt Bản Quyền (License Key)
+                  <div style={{ background: 'linear-gradient(180deg, rgba(99, 102, 241, 0.12) 0%, rgba(139, 92, 246, 0.06) 100%)', border: '1.5px dashed #6366f1', borderRadius: '12px', padding: '16px', textAlign: 'center', margin: '16px 0' }}>
+                    <div style={{ fontSize: '11px', fontWeight: 700, color: '#a5b4fc', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px' }}>
+                      🔑 MÃ BẢN QUYỀN HỆ THỐNG (LICENSE KEY)
                     </div>
-                    <div style={{ fontFamily: 'monospace', fontSize: '20px', fontWeight: 800, color: '#38bdf8', background: '#080a12', padding: '8px 14px', borderRadius: '6px', display: 'inline-block' }}>
+                    <div style={{ fontFamily: 'monospace', fontSize: '20px', fontWeight: 800, color: '#38bdf8', background: '#0b0f19', padding: '8px 16px', borderRadius: '6px', display: 'inline-block', border: '1px solid rgba(56, 189, 248, 0.35)' }}>
                       AFF-DEMO-XXXX-9999
                     </div>
+                    <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '8px' }}>
+                      Mã bản quyền định danh chính thức cấp quyền quản trị trọn đời cho chủ shop.
+                    </div>
                   </div>
 
-                  <div style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: '#fff', padding: '12px', borderRadius: '8px', textAlign: 'center', fontWeight: 700, margin: '16px 0' }}>
-                    🚀 TẢI TOÀN BỘ MÃ NGUỒN (GOOGLE DRIVE)
+                  <div style={{ background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', color: '#fff', padding: '13px 20px', borderRadius: '10px', textAlign: 'center', fontWeight: 700, margin: '16px 0', fontSize: '14px' }}>
+                    📥 TẢI TRỌN BỘ MÃ NGUỒN (GOOGLE DRIVE)
                   </div>
 
-                  <div style={{ background: 'rgba(255,255,255,0.03)', padding: '14px', borderRadius: '8px', fontSize: '12px', lineHeight: 1.5 }}>
-                    <div style={{ color: '#fbbf24', fontWeight: 700, marginBottom: '6px' }}>⚡ Hướng Dẫn 3 Bước:</div>
-                    <div>1. Giải nén source code và chạy <code>npm install</code>.</div>
-                    <div>2. Nhập Mã Key <code>AFF-DEMO-XXXX-9999</code> để kích hoạt shop.</div>
-                    <div>3. Hệ thống tạo CSDL MongoDB riêng trong 3 giây.</div>
+                  <div style={{ background: '#1a2234', border: '1px solid #28334e', borderRadius: '8px', overflow: 'hidden', margin: '16px 0', fontSize: '12px' }}>
+                    <div style={{ background: '#202b42', padding: '8px 12px', fontWeight: 700, color: '#cbd5e1', borderBottom: '1px solid #28334e' }}>
+                      📋 Chi Tiết Đơn Hàng & Giao Dịch
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', borderBottom: '1px solid #232d44', color: '#94a3b8' }}>
+                      <span>Mã đơn hàng:</span>
+                      <strong style={{ color: '#fff' }}>#ST399K_123456</strong>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', borderBottom: '1px solid #232d44', color: '#94a3b8' }}>
+                      <span>Gói bản quyền:</span>
+                      <strong style={{ color: '#a5b4fc' }}>Gói Tự Cài Đặt (399K)</strong>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', borderBottom: '1px solid #232d44', color: '#94a3b8' }}>
+                      <span>Số tiền thanh toán:</span>
+                      <strong style={{ color: '#34d399' }}>399.000₫</strong>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 12px', color: '#94a3b8' }}>
+                      <span>Trạng thái:</span>
+                      <strong style={{ color: '#38bdf8' }}>✓ Đã kích hoạt trọn đời</strong>
+                    </div>
+                  </div>
+
+                  <div style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid #232d44', borderRadius: '8px', padding: '12px 14px', fontSize: '12px', lineHeight: 1.6, color: '#cbd5e1' }}>
+                    <div style={{ color: '#fbbf24', fontWeight: 700, marginBottom: '4px' }}>🤝 Kênh Hỗ Trợ Kỹ Thuật:</div>
+                    <div>• <strong>Hotline / Zalo:</strong> <span style={{ color: '#38bdf8' }}>{configData.hotlineSupport || '0988.888.888'}</span></div>
+                    <div>• <strong>Tài liệu:</strong> <span style={{ color: '#38bdf8' }}>{configData.docsUrl || 'https://shopbig.vn/docs'}</span></div>
                   </div>
                 </div>
 
-                <div style={{ background: '#080a12', borderTop: '1px solid #232838', padding: '12px 20px', textAlign: 'center', fontSize: '11px', color: '#64748b' }}>
-                  Hotline hỗ trợ: <strong style={{ color: '#cbd5e1' }}>{configData.hotlineSupport}</strong>
+                <div style={{ background: '#0b0f19', borderTop: '1px solid #1f293d', padding: '14px 20px', textAlign: 'center', fontSize: '11px', color: '#64748b' }}>
+                  © 2026 <strong>ShopBig Platform</strong>. Nền tảng bán hàng ngoại sàn tự động hóa 100%.
                 </div>
               </div>
             </div>

@@ -129,12 +129,14 @@ export async function POST(request: Request) {
       attempts++;
     }
 
+    const defaultAmount = plan === '799k' ? 799000 : 399000;
+
     const createdLicense = await License.create({
       licenseKey: uniqueKey,
       buyerName,
       buyerPhone,
       plan,
-      price: amount || 10000,
+      price: amount || defaultAmount,
       notes: `Kích hoạt tự động qua SePay Webhook - Giao dịch #${id || referenceCode || ''} | Mã đơn: ${orderCode} | Nội dung: ${rawContent}`,
       status: 'available',
       shopName: null,
@@ -154,7 +156,7 @@ export async function POST(request: Request) {
               ...(buyerEmail ? { email: buyerEmail } : {}),
               lastOrderAt: new Date(),
             },
-            $inc: { totalOrders: 1, totalSpent: amount || 10000 },
+            $inc: { totalOrders: 1, totalSpent: amount || defaultAmount },
             $addToSet: { tags: ['sepay-buyer', `license-${plan}`] },
           },
           { upsert: true, new: true, setDefaultsOnInsert: true }
@@ -176,7 +178,7 @@ export async function POST(request: Request) {
         orderCode,
         licenseKey: uniqueKey,
         plan,
-        amount: amount || 10000,
+        amount: amount || defaultAmount,
       });
 
       if (emailRes.success) {

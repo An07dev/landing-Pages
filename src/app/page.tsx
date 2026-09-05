@@ -146,18 +146,18 @@ const benefitsList = Array.from({ length: 6 }, () => rawShopBigBenefits).flat();
 const planDetails = {
   '399k': {
     name: 'Gói Bán Hàng Ngoại Sàn (Tự Cài Đặt)',
-    shortName: 'Gói Tự Cài 10K (Test)',
-    priceNumber: 10000,
-    priceStr: '10.000₫',
+    shortName: 'Gói Tự Cài (399K)',
+    priceNumber: 399000,
+    priceStr: '399.000₫',
     originalPriceStr: '2.490.000₫',
     memoPrefix: 'GOI399K',
     badge: 'Full Source Code + Hướng Dẫn A-Z',
   },
   '799k': {
     name: 'Gói Setup & Cài Đặt Trọn Gói A - Z',
-    shortName: 'Gói Setup A-Z 10K (Test)',
-    priceNumber: 10000,
-    priceStr: '10.000₫',
+    shortName: 'Gói Setup A-Z (799K)',
+    priceNumber: 799000,
+    priceStr: '799.000₫',
     originalPriceStr: '3.500.000₫',
     memoPrefix: 'GOI799K',
     badge: 'Bàn Giao Chìa Khóa Trao Tay (Cài Sẵn A-Z)',
@@ -1400,15 +1400,15 @@ export default function LandingPage() {
               {/* Plan 1: Gói 399K */}
               <div className={`${styles.floatPlanCard} ${styles.floatPlanCardPopular}`}>
                 <div className={styles.floatPlanTopBanner}>
-                  🔥 BEST SELLER • SỞ HỮU TRỌN ĐỜI
+                   🔥 BEST SELLER • SỞ HỮU TRỌN ĐỜI
                 </div>
                 <div className={styles.floatPlanCardHead}>
                   <span className={styles.floatPlanName}>
                     Gói Bán Hàng Ngoại Sàn
                   </span>
                   <div className={styles.floatPlanPriceWrap}>
-                    <span className={styles.floatPlanPrice}>10.000₫</span>
-                    <span className={styles.floatPlanPeriod}>/ test sepay</span>
+                    <span className={styles.floatPlanPrice}>399.000₫</span>
+                    <span className={styles.floatPlanPeriod}>/ trọn đời</span>
                   </div>
                   <CoolMode options={{ particle: "🔥" }}>
                     <button
@@ -1416,7 +1416,7 @@ export default function LandingPage() {
                       className={`${styles.floatPlanBtn} ${styles.floatPlanBtnPopular}`}
                       onClick={() => openOrderModal('399k')}
                     >
-                      <FiZap size={16} /> ĐĂNG KÝ GÓI TEST 10K NGAY
+                      <FiZap size={16} /> MUA GÓI TỰ CÀI ĐẶT NGAY
                     </button>
                   </CoolMode>
                 </div>
@@ -1474,8 +1474,8 @@ export default function LandingPage() {
                     Gói Setup Trọn Gói A - Z
                   </span>
                   <div className={styles.floatPlanPriceWrap}>
-                    <span className={styles.floatPlanPrice} style={{ color: '#a5b4fc' }}>10.000₫</span>
-                    <span className={styles.floatPlanPeriod}>/ test sepay</span>
+                    <span className={styles.floatPlanPrice} style={{ color: '#a5b4fc' }}>799.000₫</span>
+                    <span className={styles.floatPlanPeriod}>/ trọn đời</span>
                   </div>
                   <CoolMode options={{ particle: "⚡" }}>
                     <button
@@ -1483,7 +1483,7 @@ export default function LandingPage() {
                       className={styles.floatPlanBtn}
                       onClick={() => openOrderModal('799k')}
                     >
-                      <FiCheck size={16} /> ĐẶT GÓI SETUP TEST 10K
+                      <FiCheck size={16} /> ĐẶT GÓI SETUP A-Z NGAY
                     </button>
                   </CoolMode>
                 </div>
@@ -2054,7 +2054,7 @@ export default function LandingPage() {
                     🎉 Đã Kích Hoạt Bản Quyền Thành Công!
                   </h3>
                   <p style={{ fontSize: 13, color: '#94a3b8', margin: '0 0 16px 0' }}>
-                    Mã đơn: <strong style={{ color: '#38bdf8' }}>{paidDetails?.orderCode || orderCode}</strong> • Số tiền: <strong style={{ color: '#34d399' }}>{Number(paidDetails?.amount || 10000).toLocaleString('vi-VN')}₫</strong>
+                    Mã đơn: <strong style={{ color: '#38bdf8' }}>{paidDetails?.orderCode || orderCode}</strong> • Số tiền: <strong style={{ color: '#34d399' }}>{Number(paidDetails?.amount || (selectedPlan === '799k' ? 799000 : 399000)).toLocaleString('vi-VN')}₫</strong>
                   </p>
 
                   {/* PROMINENT EMAIL CALLOUT BOX */}

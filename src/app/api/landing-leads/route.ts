@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     const cleanPlan = plan || '399k';
 
     const prefix = cleanPlan === '799k' ? 'ST799K_' : 'ST399K_';
-    const amount = 10000;
+    const amount = cleanPlan === '799k' ? 799000 : 399000;
     const orderCode = prefix + Math.floor(100000 + Math.random() * 900000);
 
     const clientIp =
